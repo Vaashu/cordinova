@@ -1,1 +1,1 @@
-# cordinova
+# cordinova POS
