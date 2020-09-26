@@ -1,0 +1,74 @@
+<div  cdkDropListGroup>
+    <div class="container cart-container" cdkDropList
+    [cdkDropListData]="items"
+    cdkDropListSortingDisabled
+    (cdkDropListDropped)="drop($event)">
+      <h2>Available items</h2>
+      <table class="table" >
+        <thead>
+          <tr>
+            <th scope="col">Remove</th>
+            <th scope="col">Product</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="items?.length == 0">
+            <th colspan="5">
+              <div class="alert alert-danger" role="alert">
+                Your cart is empty.
+              </div>
+            </th>
+          </tr>
+          <tr *ngFor="let item of items;let i = index;">
+            <th scope="row" (click)="remove(i,item.name,item.price)" >X</th>
+            <td>{{item.name}}</td>
+            <td>{{item.price | currency:'INR'}}</td>
+            <td>
+              <div class="inc-input">
+                <h2 style="cursor: pointer;" (click)="decrement(item.name,item.price)" >-</h2>
+                    <input class="inc-input" [(ngModel)]="count[item.name]" (change)="updatePrice(item.name,item.price)"/>
+                <h2 style="cursor: pointer;" (click)="increment(item.name,item.price)">+</h2>
+              </div>
+            </td>
+            <td>{{!(item.price*count[item.name])?0:(item.price*count[item.name]) | currency:'INR'}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="alert alert-success" role="alert" *ngIf="totalAmount">
+        Total Amount: {{totalAmount | currency:'INR'}}
+      </div>
+      <button type="button" class="btn btn-primary btn-lg btn-block">Update cart</button>
+    </div>
+    <div class="container list-container">
+        <h3>No animation</h3>
+<mat-tab-group animationDuration="0ms">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon aria-hidden="false" aria-label="Example home icon">home</mat-icon>
+      </ng-template>
+    </mat-tab>
+  
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Second
+      </ng-template>
+    </mat-tab>
+  
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Third
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+      <h2>Shopping basket</h2>
+      <div class="row"  cdkDropList
+      [cdkDropListData]="basket"
+      class="product-list"
+      (cdkDropListDropped)="drop($event)">
+        <div class="col-md-1" *ngFor="let item of basket" cdkDrag>{{item.name}}</div>
+      </div>
+</div>

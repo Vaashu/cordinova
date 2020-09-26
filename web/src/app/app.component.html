@@ -1,0 +1,10 @@
+<mat-toolbar  color="primary" *ngIf="authService.isLogin">
+    <mat-toolbar-row>
+      <span>POS</span>
+      <span class="example-spacer"></span>
+      <button (click)="authService.logout()">
+        logout
+      </button>
+    </mat-toolbar-row> 
+</mat-toolbar>
+<router-outlet></router-outlet>
