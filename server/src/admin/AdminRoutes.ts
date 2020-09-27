@@ -1,16 +1,15 @@
 import express from 'express';
-import adminUser from './AdminController';
+import adminController from './AdminController';
+import Controller from '../common/controller/Controller';
+import  JWT from '../common/middleware/jwtAuth';
 const adminRouter = express.Router();
 
 /**
  * Declare all routes, related to AdminController
  */
+adminRouter.use(JWT.authAdmin);
 
-//GET requests
-adminRouter.get('/', adminUser.getAll);
+adminRouter.post("/add-product",adminController.addProduct);
 
-//POST requests
-//adminRouter.post('/add',common.addUser);
-adminRouter.post("/getUserById", adminUser.getUserById);
 
 export default adminRouter;

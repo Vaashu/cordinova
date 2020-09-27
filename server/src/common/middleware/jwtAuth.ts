@@ -16,24 +16,52 @@ const sign = (payload:any) => {
     });   
 }
 
-const authUser = (req:Request,res:Response,next:NextFunction) =>{
-   let token:any = req.get('authorization');
-   if(token){
-      jwt.verify(token, config.ACCESS_TOKEN_SECRET, (err:any, user:any) => {
-         if(err){
-               let httpRes:ResponseBase = { success: false, message: err.message, errors:err.name, statusCode: 401 };
-               res.json(httpRes);
-         }else{
-               next();
-         }
-      })
-   }else{
-      let httpRes:ResponseBase = { success: false, message: "Falied to authentication user!", errors:"invalid token!", statusCode: 401 };
-      res.json(httpRes);
-   }
-}
+const authAdmin =  async (req: Request, res: Response, next: NextFunction) => {
+   let token: string | undefined = req.headers.authorization;
 
+   if (typeof token === 'undefined') {
+       res.status(403);
+       res.json({ msg: "Failed to Authenticate" });
+       return;
+   }
+   
+   token = token.split(' ')[1];
+
+   jwt.verify(token, config.ACCESS_TOKEN_SECRET,(err:any, user:any) => {
+       if (err || user == undefined || user.type !== 'admin') {
+           console.log(err);
+           res.status(403);
+           res.json({ msg: "Failed to Authenticate" });
+           return;
+       }
+       next();
+   });
+
+}
+const authManager =  async (req: Request, res: Response, next: NextFunction) => {
+    let token: string | undefined = req.headers.authorization;
+ 
+    if (typeof token === 'undefined') {
+        res.status(403);
+        res.json({ msg: "Failed to Authenticate" });
+        return;
+    }
+    
+    token = token.split(' ')[1];
+ 
+    jwt.verify(token, config.ACCESS_TOKEN_SECRET,(err:any, user:any) => {
+        if (err || user == undefined || user.type !== 'manager') {
+            console.log(err);
+            res.status(403);
+            res.json({ msg: "Failed to Authenticate" });
+            return;
+        }
+        next();
+    });
+ 
+ }
 export default {
     sign,
-    authUser
+    authAdmin,
+    authManager
 }

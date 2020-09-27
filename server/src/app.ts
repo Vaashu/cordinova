@@ -25,6 +25,6 @@ app.use(cors());
 app.use(helmet());
 
 app.use('/api/auth',commonRouter);
-app.use('/admin', adminRouter); 
-app.use('/customer', managerRouter);  
+app.use('/api/admin', adminRouter); 
+app.use('/api/manager', managerRouter);  
 export default app;

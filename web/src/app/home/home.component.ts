@@ -3,6 +3,8 @@ import {CdkDragDrop, transferArrayItem} from '@angular/cdk/drag-drop';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { CommonService } from '../common.service';
+import { MatTabChangeEvent } from '@angular/material/tabs/typings/tab-group';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -10,26 +12,25 @@ import Swal from 'sweetalert2';
 })
 export class HomeComponent implements OnInit {
   totalAmount:any = 0;
+  heading:string = "all";
+  categories = ["computer","fruits","vegetables"];
   amount = {};
+  searchText:string;
   items = [
    
   ];
   count = {};
-  basket = [
-    {name:'Carrots', price:23},
-    {name:'Tomatoes', price:23},
-    {name:'Onions', price:23},
-    {name:'Apples', price:23},
-    {name:'Avocados', price:23},
-  ];
-
-  constructor(public authService: AuthService,router: Router) { }
+  basket = [];
+  products = [];
+  constructor(public commonService:CommonService,public authService: AuthService,router: Router) { 
+     this.getAllProducts();
+  }
 
   ngOnInit() {
   }
   
   drop(event: CdkDragDrop<string[]>) {
-      transferArrayItem(event.previousContainer.data,
+     transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
@@ -92,4 +93,53 @@ export class HomeComponent implements OnInit {
       }
     })
   }
+
+  setHead(item:MatTabChangeEvent){
+    this.heading = item.tab.textLabel;
+    this.searchByTabSelection(); 
+  }
+
+  getAllProducts(){
+    this.commonService._get('manager/get-product',(res)=>{
+      console.log(res);
+      this.basket = res.response;
+      this.products = res.response;
+    },(err)=>{
+
+    });
+  }
+
+  searchByName(){
+    if(this.searchText){
+      console.log(this.searchText);
+      let filter = this.products.filter((e)=>{
+        return e.name.search(this.searchText) !== -1; 
+      });
+      this.basket = filter;
+    }else{
+      if(this.heading === "all"){
+        this.getAllProducts();
+     }else{
+       let filter = this.products.filter((e)=>{
+         return e.category == this.heading;
+        });
+        console.log(filter);
+        this.basket = filter;
+     }
+    }
+    
+     
+  }
+
+  searchByTabSelection(){
+      if(this.heading === "all"){
+        this.getAllProducts();
+      }else{
+       let filter = this.products.filter((e)=>{
+         return e.category == this.heading;
+        });
+        console.log(filter);
+        this.basket = filter;
+      }
+    }
 }

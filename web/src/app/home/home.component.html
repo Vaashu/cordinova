@@ -3,7 +3,7 @@
     [cdkDropListData]="items"
     cdkDropListSortingDisabled
     (cdkDropListDropped)="drop($event)">
-      <h2>Available items</h2>
+      <h2>My cart</h2>
       <table class="table" >
         <thead>
           <tr>
@@ -40,31 +40,28 @@
       <div class="alert alert-success" role="alert" *ngIf="totalAmount">
         Total Amount: {{totalAmount | currency:'INR'}}
       </div>
-      <button type="button" class="btn btn-primary btn-lg btn-block">Update cart</button>
+      <button type="button" class="btn btn-primary btn-lg btn-block" *ngIf="totalAmount">Update cart</button>
     </div>
     <div class="container list-container">
-        <h3>No animation</h3>
-<mat-tab-group animationDuration="0ms">
-    <mat-tab>
+        <h3>Products</h3>
+   <mat-tab-group animationDuration="0ms" (selectedTabChange)="setHead($event)">
+    <mat-tab label="all">
       <ng-template mat-tab-label>
         <mat-icon aria-hidden="false" aria-label="Example home icon">home</mat-icon>
       </ng-template>
     </mat-tab>
-  
-    <mat-tab>
+    <mat-tab *ngFor="let item of categories" [label]="item">
       <ng-template mat-tab-label>
-        Second
+        {{item}}
       </ng-template>
     </mat-tab>
-  
-    <mat-tab>
-      <ng-template mat-tab-label>
-        Third
-      </ng-template>
-    </mat-tab>
-
   </mat-tab-group>
-      <h2>Shopping basket</h2>
+     
+      <h2>{{heading}}</h2>
+      <mat-form-field appearance="outline">
+        <mat-label>Search by name</mat-label>
+        <input matInput placeholder="Product" [(ngModel)]="searchText" (keyup)="searchByName()">
+     </mat-form-field>
       <div class="row"  cdkDropList
       [cdkDropListData]="basket"
       class="product-list"
